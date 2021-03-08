@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  schedule:
+    - cron:  0 20 * * 6
+  workflow_dispatch:
+
+env:
+  packages_to_install: shellcheck
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest]
+        include:
+          - os: ubuntu-latest
+            package_update_command: sudo apt update
+            package_install_command: sudo apt install --no-install-recommends
+          - os: macOS-latest
+            package_update_command:
+            package_install_command: brew install
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Install supplementals
+      env:
+        HOMEBREW_NO_AUTO_UPDATE: 1
+        HOMEBREW_NO_INSTALL_CLEANUP: 1
+      shell: bash
+      run: |
+        ${{ matrix.package_update_command }}
+        ${{ matrix.package_install_command }} ${{ env.packages_to_install }}
+
+    - name: Lint
+      shell: bash
+      run: make -k -j lint
