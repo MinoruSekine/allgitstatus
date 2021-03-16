@@ -1,5 +1,3 @@
-all:
-
 lint: sh-lint-all
 
 # Rules for shell script.
