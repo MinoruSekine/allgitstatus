@@ -43,3 +43,10 @@ jobs:
     - name: Lint
       shell: bash
       run: make -k -j lint
+
+    - name: Install and run script
+      shell: bash
+      run: |
+        sudo make -k -j install
+        hash -r
+        allgitstatus.sh ./
