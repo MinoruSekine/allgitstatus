@@ -65,3 +65,8 @@ jobs:
       shell: bash
       run: GIT_STATUS_PARAMETERS="-s" allgitstatus.sh ./
 
+    - name: Test the message if no repositories are found
+      shell: bash
+      run: |
+        mkdir dir_without_no_git_repositories
+        allgitstatus.sh dir_without_no_git_repositories | grep -i "no git repositories are found"
