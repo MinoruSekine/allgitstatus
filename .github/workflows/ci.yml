@@ -48,9 +48,6 @@ jobs:
         run: |
           sudo make -k -j install
           hash -r
-          allgitstatus.sh
-          allgitstatus.sh ./
-          GIT_STATUS_PARAMETERS="-s" allgitstatus.sh ./
 
       - name: Help
         shell: bash
