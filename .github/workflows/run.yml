@@ -1,0 +1,47 @@
+name: Run
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  schedule:
+    - cron: 0 20 * * 6
+  workflow_dispatch:
+
+jobs:
+  InstallAndRun:
+    name: Install and run
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install
+        shell: bash
+        run: |
+          sudo make -k -j install
+          hash -r
+
+      - name: Help
+        shell: bash
+        run: allgitstatus.sh
+
+      - name: Run without variables
+        shell: bash
+        run: allgitstatus.sh ./
+
+      - name: Run with specifying parameters for "git status"
+        shell: bash
+        run: GIT_STATUS_PARAMETERS="-s" allgitstatus.sh ./
+
+      - name: Test the message if no repositories are found
+        shell: bash
+        run: |
+          mkdir dir_without_no_git_repositories
+          allgitstatus.sh dir_without_no_git_repositories | grep -i "no git repositories are found"
